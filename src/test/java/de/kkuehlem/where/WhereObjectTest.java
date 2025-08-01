@@ -2,18 +2,11 @@ package de.kkuehlem.where;
 
 import de.kkuehlem.where.context.WhereContext;
 import de.kkuehlem.where.context.resolver.ObjectIdentifierResolver;
-import lombok.Builder;
+import de.kkuehlem.where.helper.Person;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 public class WhereObjectTest {
-
-    @Builder
-    private static class Person {
-
-        private final String name;
-        private final int age;
-    }
 
     @Test
     public void basicTest() {
