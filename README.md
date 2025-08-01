@@ -8,7 +8,7 @@
 <dependency>
     <groupId>de.kkuehlem</groupId>
     <artifactId>where</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
 </dependency>
 ```
 
@@ -44,5 +44,6 @@ List<Person> filtered = persons.stream()
     * e.g. `(age < 40 OR name = "Anna") AND NOT (age > 30 AND name != "Bert")`
 
 ## To Do
-- [ ] Add support for lists / array (e.g. `IN`, `NOT IN`)
-- [ ] Add support for boolean constants (`true`, `false`)
+- [ ] Add support for lists / arrays (e.g. `IN`, `NOT IN`)
+- [ ] Add support for enums
+→ Special handler `SpecialWhereTypeDefinition` for list/array and enum types
