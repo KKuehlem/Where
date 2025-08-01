@@ -10,18 +10,12 @@ import org.antlr.v4.runtime.tree.ParseTree;
 
 public class Where {
 
-    public static void main(String[] args) {
-        WhereContext ctx = WhereContext.builder()
-                .resolver(name -> "123")
-                .build();
-        
-        String input = "x = '1234'";
-
+    public static boolean where(String input, WhereContext ctx) {
         ExpressionLexer lexer = new ExpressionLexer(CharStreams.fromString(input));
         ExpressionParser parser = new ExpressionParser(new CommonTokenStream(lexer));
         ParseTree tree = parser.expression();
 
         ExpressionEvaluator eval = new ExpressionEvaluator(ctx);
-        System.out.println(input + " -> " + eval.visit(tree));
+        return eval.visit(tree);
     }
 }

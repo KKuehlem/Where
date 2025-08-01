@@ -1,4 +1,6 @@
-package de.kkuehlem.where.context;
+package de.kkuehlem.where.context.resolver;
+
+import de.kkuehlem.where.context.NoSuchIdentifierException;
 
 @FunctionalInterface
 public interface IdentifierResolver {
