@@ -19,8 +19,8 @@ public class WhereStringType extends WhereTypeDefinition<String> {
     }
     
     public static String parseStringLiteral(String literal) {
-        if (!literal.startsWith("'") && !literal.startsWith("\"")) throw new IllegalArgumentException("Malformed string: " + literal);
-        if (!literal.endsWith("'") && !literal.endsWith("\"")) throw new IllegalArgumentException("Malformed string: " + literal);
+        if (!literal.startsWith("'")) throw new IllegalArgumentException("Malformed string: " + literal);
+        if (!literal.endsWith("'")) throw new IllegalArgumentException("Malformed string: " + literal);
         
         return literal.substring(1, literal.length() - 1);
     }

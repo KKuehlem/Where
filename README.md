@@ -1,6 +1,5 @@
 [![Java](https://img.shields.io/badge/Java-%23ED8B00.svg?logo=openjdk&logoColor=white)](#)
 [![MavenCentral](https://img.shields.io/maven-central/v/de.kkuehlem/where)](#)
-![GitHub](https://img.shields.io/github/license/kkuehlem/where)
 
 # Where - A simple Reflection-Based Query Language for Java
 
