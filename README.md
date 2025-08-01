@@ -35,10 +35,14 @@ List<Person> filtered = persons.stream()
 * Dates (LocalDate, LocalDateTime)
     * `=`, `!=`, `<`, `<=`, `>`, `>=`
     * Literal date format: `yyyy-MM-dd` (ISO 8601)
+* Booleans
+    * As operands in expressions, e.g. `isActive OR isVerified`
+* Custom Types
+    * ...explanation coming soon...
 * Concatenating Expressions
-    * `OR`, `AND`, braces
-    * e.g. `(age < 40 OR name = "Anna") AND (age > 30 AND name != "Bert")`
+    * `OR`, `AND`, `NOT`, braces
+    * e.g. `(age < 40 OR name = "Anna") AND NOT (age > 30 AND name != "Bert")`
 
 ## To Do
 - [ ] Add support for lists / array (e.g. `IN`, `NOT IN`)
-- [ ] Add support for boolean values (e.g. `true`, `false`)
+- [ ] Add support for boolean constants (`true`, `false`)

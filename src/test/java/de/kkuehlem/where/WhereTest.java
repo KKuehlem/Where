@@ -100,4 +100,24 @@ public class WhereTest {
         assertTrue(Where.where("NOT (NOT x = '123')", ctx));
         assertTrue(Where.where("NOT NOT x = '123'", ctx));
     }
+    
+    @Test
+    public void booleanTest() {
+        Map<String, Object> map = Map.of(
+                "a", 10,
+                "t", true,
+                "f", false
+        );
+        
+        WhereContext ctx = WhereContext.builder()
+                .resolver(new MapIdentifierResolver(map))
+                .build();
+        
+        assertTrue(Where.where("t", ctx));
+        assertFalse(Where.where("NOT t", ctx));
+        assertFalse(Where.where("f", ctx));
+        assertTrue(Where.where("NOT f", ctx));
+        assertTrue(Where.where("t OR f", ctx));
+        assertFalse(Where.where("t AND f", ctx));
+    }
 }

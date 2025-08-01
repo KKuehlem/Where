@@ -12,11 +12,12 @@ andExpr
 
 notExpr
     : 'NOT' notExpr
-    | comparisonExpr
+    | booleanExpr
     ;
 
-comparisonExpr
+booleanExpr
     : operand operator operand
+    | IDENTIFIER // Boolean variables
     | '(' expression ')'
     ;
 

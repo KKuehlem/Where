@@ -33,13 +33,16 @@ public class ExpressionEvaluator extends ExpressionBaseVisitor<Boolean> {
         boolean isNot = ctx.getChildCount() == 2 && ctx.getChild(0).getText().equalsIgnoreCase("NOT");
         
         if (isNot) return !visit(ctx.notExpr());
-        else return visit(ctx.comparisonExpr());
+        else return visit(ctx.booleanExpr());
     }
 
     @Override
-    public Boolean visitComparisonExpr(ExpressionParser.ComparisonExprContext ctx) {
-        if (ctx.expression() != null) {
+    public Boolean visitBooleanExpr(ExpressionParser.BooleanExprContext ctx) {
+        if (ctx.expression() != null) { // ( expression )
             return visit(ctx.expression());
+        }
+        if (ctx.IDENTIFIER() != null) {
+            return resolveBoolean(ctx.IDENTIFIER().getText());
         }
 
         boolean leftIsIdentifier = ctx.operand(0).getStart().getType() == ExpressionLexer.IDENTIFIER;
@@ -103,6 +106,13 @@ public class ExpressionEvaluator extends ExpressionBaseVisitor<Boolean> {
         
         // Only one is null
         return operator == Operator.NOT_EQUALS; // All other operators should be false 
+    }
+
+    private Boolean resolveBoolean(String name) {
+        Object value = context.getResolver().resolveIdentifier(name);
+        if (value instanceof Boolean b) return b;
+        else if (value == null) return false;
+        else throw new IllegalArgumentException("Expected boolean, got " + value.getClass().getCanonicalName());
     }
 
 }
