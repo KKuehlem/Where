@@ -83,4 +83,21 @@ public class WhereTest {
         assertTrue(Where.where("a < '2025-03-01'", ctx));
         assertTrue(Where.where("a > '2025-01-01'", ctx));
     }
+    
+    @Test
+    public void negationTest() {
+        Map<String, Object> map = Map.of(
+                "x", "123"
+        );
+        
+        WhereContext ctx = WhereContext.builder()
+                .resolver(new MapIdentifierResolver(map))
+                .build();
+        
+        assertTrue(Where.where("NOT x = '1234'", ctx));
+        assertTrue(Where.where("NOT x != '123'", ctx));
+        assertTrue(Where.where("NOT (x != '123')", ctx));
+        assertTrue(Where.where("NOT (NOT x = '123')", ctx));
+        assertTrue(Where.where("NOT NOT x = '123'", ctx));
+    }
 }

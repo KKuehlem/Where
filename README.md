@@ -8,7 +8,7 @@
 <dependency>
     <groupId>de.kkuehlem</groupId>
     <artifactId>where</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 
@@ -42,4 +42,3 @@ List<Person> filtered = persons.stream()
 ## To Do
 - [ ] Add support for lists / array (e.g. `IN`, `NOT IN`)
 - [ ] Add support for boolean values (e.g. `true`, `false`)
-- [ ] General negation operator (e.g. `NOT age < 40`)

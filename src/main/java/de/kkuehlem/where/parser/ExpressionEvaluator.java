@@ -22,10 +22,18 @@ public class ExpressionEvaluator extends ExpressionBaseVisitor<Boolean> {
 
     @Override
     public Boolean visitAndExpr(ExpressionParser.AndExprContext ctx) {
-        for (var exp : ctx.comparisonExpr()) {
+        for (var exp : ctx.notExpr()) {
             if (!visit(exp)) return false;
         }
         return true;
+    }
+    
+    @Override
+    public Boolean visitNotExpr(ExpressionParser.NotExprContext ctx) {
+        boolean isNot = ctx.getChildCount() == 2 && ctx.getChild(0).getText().equalsIgnoreCase("NOT");
+        
+        if (isNot) return !visit(ctx.notExpr());
+        else return visit(ctx.comparisonExpr());
     }
 
     @Override

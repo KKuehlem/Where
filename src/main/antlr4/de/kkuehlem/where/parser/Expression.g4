@@ -7,7 +7,12 @@ orExpr
     ;
 
 andExpr
-    : comparisonExpr ('AND' comparisonExpr)*
+    : notExpr ('AND' notExpr)*
+    ;
+
+notExpr
+    : 'NOT' notExpr
+    | comparisonExpr
     ;
 
 comparisonExpr
