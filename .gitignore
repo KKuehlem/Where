@@ -61,3 +61,6 @@ pom.xml.tag
 
 .vscode
 /nbproject/
+
+# ANTLR
+.antlr/
