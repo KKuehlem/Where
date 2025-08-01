@@ -2,7 +2,6 @@ package de.kkuehlem.where.definitions;
 
 import de.kkuehlem.where.context.UnsupportedOperatorException;
 import de.kkuehlem.where.parser.Operator;
-import static de.kkuehlem.where.parser.Operator.LESS_THAN;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
