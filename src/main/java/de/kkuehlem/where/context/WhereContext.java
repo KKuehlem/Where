@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.NonNull;
 
 @Getter
-public class EvaluationContext {
+public class WhereContext {
 
     public static final List<WhereTypeDefinition<?>> DEFAULT_TYPES = List.of(
             new WhereStringType()
@@ -21,7 +21,7 @@ public class EvaluationContext {
     private final Map<Class<?>, WhereTypeDefinition<?>> typeLookup = new HashMap<>();
 
     @Builder
-    public EvaluationContext(@NonNull IdentifierResolver resolver, List<WhereTypeDefinition<?>> types) {
+    public WhereContext(@NonNull IdentifierResolver resolver, List<WhereTypeDefinition<?>> types) {
         this.resolver = resolver;
         this.types = types != null ? types : DEFAULT_TYPES;
 
@@ -35,4 +35,11 @@ public class EvaluationContext {
             }
         }
     }
+    
+    public <T> WhereTypeDefinition<? super T> getType(Class<T> cls) throws UnsupportedTypeException {
+        WhereTypeDefinition<? super T> d = (WhereTypeDefinition<? super T>) typeLookup.get(cls);
+        if (d == null) throw new UnsupportedTypeException(cls);
+        else return d;
+    }
+    
 }

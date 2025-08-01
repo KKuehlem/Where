@@ -3,6 +3,7 @@ package de.kkuehlem.where.context.definitions;
 import de.kkuehlem.where.context.UnsupportedOperatorException;
 import de.kkuehlem.where.parser.Operator;
 import java.util.List;
+import java.util.Objects;
 
 public class WhereStringType extends WhereTypeDefinition<String> {
 
@@ -11,10 +12,25 @@ public class WhereStringType extends WhereTypeDefinition<String> {
                 String.class
         ));
     }
+    
+    @Override
+    public String parseLiteral(String literal) {
+        if (!literal.startsWith("'") && !literal.startsWith("\"")) throw new IllegalArgumentException("Malformed string: " + literal);
+        if (!literal.endsWith("'") && !literal.endsWith("\"")) throw new IllegalArgumentException("Malformed string: " + literal);
+        
+        return literal.substring(1, literal.length() - 1);
+    }
 
     @Override
     public <A extends String, B extends String> boolean evaluate(A a, Operator operator, B b) throws UnsupportedOperatorException {
-        return false;
+        switch (operator) {
+            case EQUALS:
+                return Objects.equals(a, b);
+            case NOT_EQUALS:
+                return !Objects.equals(a, b);
+            default:
+                throw new UnsupportedOperatorException(this, operator);
+        }
     }
 
 }
