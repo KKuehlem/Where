@@ -1,0 +1,13 @@
+package de.kkuehlem.where.context;
+
+import de.kkuehlem.where.context.definitions.WhereTypeDefinition;
+import de.kkuehlem.where.parser.Operator;
+
+public class UnsupportedOperatorException extends RuntimeException {
+
+    public UnsupportedOperatorException(WhereTypeDefinition type, Operator operator) {
+        super(String.format("Unsupported operator '%s' (%s) for type %s", 
+                operator.getSymbol(), operator.name(), type.getName()));
+    }
+
+}
