@@ -1,6 +1,6 @@
 package de.kkuehlem.where.context;
 
-import de.kkuehlem.where.context.definitions.WhereTypeDefinition;
+import de.kkuehlem.where.definitions.WhereTypeDefinition;
 import de.kkuehlem.where.parser.Operator;
 
 public class UnsupportedOperatorException extends RuntimeException {

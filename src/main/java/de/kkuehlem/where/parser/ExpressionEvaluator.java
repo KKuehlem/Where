@@ -1,7 +1,7 @@
 package de.kkuehlem.where.parser;
 
 import de.kkuehlem.where.context.WhereContext;
-import de.kkuehlem.where.context.definitions.WhereTypeDefinition;
+import de.kkuehlem.where.definitions.WhereTypeDefinition;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NonNull;

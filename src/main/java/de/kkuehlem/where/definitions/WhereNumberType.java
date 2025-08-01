@@ -1,4 +1,4 @@
-package de.kkuehlem.where.context.definitions;
+package de.kkuehlem.where.definitions;
 
 import de.kkuehlem.where.context.UnsupportedOperatorException;
 import de.kkuehlem.where.parser.Operator;

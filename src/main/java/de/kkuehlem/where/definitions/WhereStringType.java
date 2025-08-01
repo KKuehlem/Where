@@ -1,4 +1,4 @@
-package de.kkuehlem.where.context.definitions;
+package de.kkuehlem.where.definitions;
 
 import de.kkuehlem.where.context.UnsupportedOperatorException;
 import de.kkuehlem.where.parser.Operator;
@@ -15,6 +15,10 @@ public class WhereStringType extends WhereTypeDefinition<String> {
     
     @Override
     public String parseLiteral(String literal) {
+        return parseStringLiteral(literal);
+    }
+    
+    public static String parseStringLiteral(String literal) {
         if (!literal.startsWith("'") && !literal.startsWith("\"")) throw new IllegalArgumentException("Malformed string: " + literal);
         if (!literal.endsWith("'") && !literal.endsWith("\"")) throw new IllegalArgumentException("Malformed string: " + literal);
         

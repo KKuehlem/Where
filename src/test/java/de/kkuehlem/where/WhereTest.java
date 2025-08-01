@@ -2,6 +2,8 @@ package de.kkuehlem.where;
 
 import de.kkuehlem.where.context.WhereContext;
 import de.kkuehlem.where.context.resolver.MapIdentifierResolver;
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.Map;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -61,5 +63,24 @@ public class WhereTest {
         assertTrue(Where.where("c < 21", ctx));
         assertTrue(Where.where("c < 21.5", ctx));
         assertTrue(Where.where("c < 21.99", ctx));
+    }
+    
+    @Test
+    public void dateTest() {
+        Map<String, Object> map = Map.of(
+                "a", LocalDate.of(2025, Month.FEBRUARY, 01)
+        );
+        
+        WhereContext ctx = WhereContext.builder()
+                .resolver(new MapIdentifierResolver(map))
+                .build();
+        
+        // Parsing is ISO Date -> Year-Month-Day
+        assertTrue(Where.where("a = '2025-02-01'", ctx));
+        assertTrue(Where.where("a >= '2025-02-01'", ctx));
+        assertTrue(Where.where("a <= '2025-02-01'", ctx));
+        
+        assertTrue(Where.where("a < '2025-03-01'", ctx));
+        assertTrue(Where.where("a > '2025-01-01'", ctx));
     }
 }

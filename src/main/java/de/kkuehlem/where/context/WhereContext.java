@@ -1,9 +1,10 @@
 package de.kkuehlem.where.context;
 
-import de.kkuehlem.where.context.definitions.WhereNumberType;
-import de.kkuehlem.where.context.definitions.WhereStringType;
-import de.kkuehlem.where.context.definitions.WhereTypeDefinition;
 import de.kkuehlem.where.context.resolver.IdentifierResolver;
+import de.kkuehlem.where.definitions.WhereDatetype;
+import de.kkuehlem.where.definitions.WhereNumberType;
+import de.kkuehlem.where.definitions.WhereStringType;
+import de.kkuehlem.where.definitions.WhereTypeDefinition;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +17,8 @@ public class WhereContext {
 
     public static final List<WhereTypeDefinition<?>> DEFAULT_TYPES = List.of(
             new WhereStringType(),
-            new WhereNumberType()
+            new WhereNumberType(),
+            new WhereDatetype()
     );
 
     @NonNull private final IdentifierResolver resolver;
