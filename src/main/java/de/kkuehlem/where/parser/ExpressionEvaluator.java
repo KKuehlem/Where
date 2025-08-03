@@ -4,6 +4,7 @@ import de.kkuehlem.where.context.WhereContext;
 import de.kkuehlem.where.definitions.AbstractBaseType;
 import de.kkuehlem.where.definitions.AbstractCustomType;
 import de.kkuehlem.where.definitions.AbstractType;
+import de.kkuehlem.where.exceptions.IllegalTypeException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NonNull;
@@ -123,7 +124,7 @@ public class ExpressionEvaluator extends ExpressionBaseVisitor<Boolean> {
         if (value instanceof Boolean b) return b;
         else if (value == null) return false;
         else
-            throw new IllegalArgumentException("Expected boolean, got " + value.getClass().getCanonicalName());
+            throw new IllegalTypeException("Expected boolean, got " + value.getClass().getCanonicalName());
     }
 
     private TypeAndValue literalToCustomType(AbstractCustomType<?> type, Object value) {
@@ -137,7 +138,7 @@ public class ExpressionEvaluator extends ExpressionBaseVisitor<Boolean> {
 
     private void checkSupportsComparison(AbstractType<?> type, Object otherValue) {
         if (!type.supports(otherValue.getClass())) {
-            throw new IllegalArgumentException(String.format("Cannot compare %s with %s",
+            throw new IllegalTypeException(String.format("Cannot compare %s with %s",
                     otherValue.getClass().getCanonicalName(), type.getClass().getCanonicalName()));
         }
     }
