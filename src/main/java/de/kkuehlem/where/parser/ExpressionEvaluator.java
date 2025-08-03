@@ -44,8 +44,8 @@ public class ExpressionEvaluator extends ExpressionBaseVisitor<Boolean> {
         if (ctx.expression() != null) { // ( expression )
             return visit(ctx.expression());
         }
-        if (ctx.IDENTIFIER() != null) { // Whole expression is a identifier 
-            return resolveBoolean(ctx.IDENTIFIER().getText());
+        if (ctx.qualifiedIdentifier() != null) { // Whole expression is a identifier 
+            return resolveBoolean(ctx.qualifiedIdentifier().getText());
         }
 
         Operator operator = Operator.forSymbol(ctx.operator().getText());
@@ -87,7 +87,7 @@ public class ExpressionEvaluator extends ExpressionBaseVisitor<Boolean> {
     private TypeAndValue parseOperand(ExpressionParser.OperandContext o) {
         Object value;
         AbstractType<Object> type = null;
-        boolean isLiteral = o.IDENTIFIER() == null;
+        boolean isLiteral = o.qualifiedIdentifier() == null;
 
         if (!isLiteral) { // Operand is a identifier
             value = context.resolveIdentifier(o.getText());

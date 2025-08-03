@@ -47,8 +47,10 @@ Other features:
 * Values can be `null` and `null` can also be used literally in a query
 * Expressions with `null` will only be `true`, if a equals operator (`=`, `<=`, `>=`) is used and both operands are `null`
     * This means that e.g. `null > null` is `false` and `null >= null` is `true`
+* Identifiers can refer to sub-objects, e.g. `book.author` (see `WhereObjectTest.java`)
+    * If a property of a `null` objects is referenced, no exception is throw - it just evaluates to `null` (e.g. `book.author = null`, if `book` or `author` are `null`)
 
 ## To Do
 - [ ] Add support for lists / arrays (e.g. `IN`, `NOT IN`)
 - [ ] Add support for enums
-- [ ] Add support for nested objects 
+- [ ] String operators `MATCHES` to match a regex and `LIKE` to match a wildcard expression

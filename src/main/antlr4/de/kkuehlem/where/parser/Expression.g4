@@ -17,14 +17,18 @@ notExpr
 
 booleanExpr
     : operand operator operand
-    | IDENTIFIER // Boolean variables
+    | qualifiedIdentifier // Boolean variables
     | '(' expression ')'
     ;
 
 operand
-    : IDENTIFIER
+    : qualifiedIdentifier
     | STRING
     | NUMBER
+    ;
+
+qualifiedIdentifier
+    : IDENTIFIER ('.' IDENTIFIER)*
     ;
 
 operator
