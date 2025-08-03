@@ -48,4 +48,3 @@ List<Person> filtered = persons.stream()
 ## To Do
 - [ ] Add support for lists / arrays (e.g. `IN`, `NOT IN`)
 - [ ] Add support for enums
-→ Special handler `SpecialWhereTypeDefinition` for list/array and enum types

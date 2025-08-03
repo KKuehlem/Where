@@ -19,7 +19,7 @@ public class WhereStreamTest {
         
         List<Person> filtered = persons.stream()
                 .parallel()
-                .filter(Where.filter(input))
+                .filter(Where.where(input))
                 .toList();
         
         assertEquals(2, filtered.size());

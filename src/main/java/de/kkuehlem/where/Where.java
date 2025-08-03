@@ -13,27 +13,28 @@ import org.antlr.v4.runtime.tree.ParseTree;
 
 public class Where {
 
-    public static <T> Predicate<T> filter(String input) {
-        return filter(input, t -> WhereContext.builder()
+    public static <T> Predicate<T> where(String input) {
+        return where(input, t -> WhereContext.builder()
                 .resolver(new ObjectIdentifierResolver(t))
                 .build()
         );
     }
 
-    public static <T> Predicate<T> filter(String input, Function<T, WhereContext> ctx) {
-        ExpressionLexer lexer = new ExpressionLexer(CharStreams.fromString(input));
-        ExpressionParser parser = new ExpressionParser(new CommonTokenStream(lexer));
-        ParseTree tree = parser.expression();
+    public static <T> Predicate<T> where(String input, Function<T, WhereContext> ctx) {
+        ParseTree tree = createTree(input);
 
         return t -> new ExpressionEvaluator(ctx.apply(t)).visit(tree);
     }
 
     public static boolean where(String input, WhereContext ctx) {
+        
+        return new ExpressionEvaluator(ctx)
+                .visit(createTree(input));
+    }
+    
+    private static ParseTree createTree(String input) {
         ExpressionLexer lexer = new ExpressionLexer(CharStreams.fromString(input));
         ExpressionParser parser = new ExpressionParser(new CommonTokenStream(lexer));
-        ParseTree tree = parser.expression();
-
-        ExpressionEvaluator eval = new ExpressionEvaluator(ctx);
-        return eval.visit(tree);
+        return parser.expression();
     }
 }
