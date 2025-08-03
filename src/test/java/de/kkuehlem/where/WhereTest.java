@@ -77,6 +77,7 @@ public class WhereTest {
         
         // Parsing is ISO Date -> Year-Month-Day
         assertTrue(Where.where("a = '2025-02-01'", ctx));
+        assertTrue(Where.where("'2025-02-01' = a", ctx));
         assertTrue(Where.where("a >= '2025-02-01'", ctx));
         assertTrue(Where.where("a <= '2025-02-01'", ctx));
         

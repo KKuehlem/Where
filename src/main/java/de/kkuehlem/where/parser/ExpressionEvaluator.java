@@ -1,7 +1,9 @@
 package de.kkuehlem.where.parser;
 
 import de.kkuehlem.where.context.WhereContext;
-import de.kkuehlem.where.definitions.WhereTypeDefinition;
+import de.kkuehlem.where.definitions.AbstractBaseType;
+import de.kkuehlem.where.definitions.AbstractCustomType;
+import de.kkuehlem.where.definitions.AbstractType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NonNull;
@@ -27,11 +29,11 @@ public class ExpressionEvaluator extends ExpressionBaseVisitor<Boolean> {
         }
         return true;
     }
-    
+
     @Override
     public Boolean visitNotExpr(ExpressionParser.NotExprContext ctx) {
         boolean isNot = ctx.getChildCount() == 2 && ctx.getChild(0).getText().equalsIgnoreCase("NOT");
-        
+
         if (isNot) return !visit(ctx.notExpr());
         else return visit(ctx.booleanExpr());
     }
@@ -41,61 +43,69 @@ public class ExpressionEvaluator extends ExpressionBaseVisitor<Boolean> {
         if (ctx.expression() != null) { // ( expression )
             return visit(ctx.expression());
         }
-        if (ctx.IDENTIFIER() != null) {
+        if (ctx.IDENTIFIER() != null) { // Whole expression is a identifier 
             return resolveBoolean(ctx.IDENTIFIER().getText());
         }
 
-        boolean leftIsIdentifier = ctx.operand(0).getStart().getType() == ExpressionLexer.IDENTIFIER;
-        boolean rightIsIdentifier = ctx.operand(1).getStart().getType() == ExpressionLexer.IDENTIFIER;
         Operator operator = Operator.forSymbol(ctx.operator().getText());
 
-        if (!leftIsIdentifier && !rightIsIdentifier) {
-            throw new IllegalArgumentException("At least one operand has to be a identifier, comparing two liertal constants is not supported: " + ctx.getText());
-        }
-
-        Object left = null;
-        Object right = null;
-        WhereTypeDefinition<Object> type = null;
-
         // Collect identifiers and resolve type
-        if (leftIsIdentifier) {
-            left = context.getResolver().resolveIdentifier(ctx.operand(0).getText());
+        TypeAndValue left = parseOperand(ctx.operand(0));
+        TypeAndValue right = parseOperand(ctx.operand(1));
 
-            if (left != null) {
-                type = (WhereTypeDefinition<Object>) context.getType(left.getClass());
-            }
-        }
-        if (rightIsIdentifier) {
-            right = context.getResolver().resolveIdentifier(ctx.operand(1).getText());
-            if (right != null) {
-                if (type == null) { // Has not been resolved by left (because it is a literal or null)
-                    type = (WhereTypeDefinition<Object>) context.getType(right.getClass());
-                }
-                else { // Was already infered from left -> Both sides are identifiers
-                    if (!type.supports(right.getClass())) {
-                        assert left != null; // Because type is set
-                        
-                        throw new IllegalArgumentException(String.format("Cannot compare %s and %s with %s", 
-                                left.getClass().getCanonicalName(), right.getClass().getCanonicalName(), type.getClass().getCanonicalName()));
-                    }
-                }
-            }
-        }
-        
-        if (type == null) { // type can still be null, if both are identifiers and both resolve to null
-            assert rightIsIdentifier && leftIsIdentifier && left == null && right == null;
-            return solveNull(left, operator, right);
-        }
-        
-        // Parse literals
-        if (!leftIsIdentifier) left = type.parseLiteral(ctx.operand(0).getText());
-        if (!rightIsIdentifier) right = type.parseLiteral(ctx.operand(1).getText());
-        
-        if (left == null || right == null) {
-            return solveNull(left, operator, right);
+        if (left.value() == null || right.value() == null) {
+            // Null checks do not need the right types
+            return solveNull(left.value(), operator, right.value());
         }
 
-        return type.evaluate(left, operator, right);
+        // From here on, neither values nor types are null
+        assert left.type() != null && right.type() != null;
+
+        AbstractType<Object> type;
+        // Type if a custom type, if left or right are non-literal
+        if (left.type() instanceof AbstractCustomType<?> c) {
+            type = left.type();
+            if (right.isLiteral())
+                right = literalToCustomType(c, right.value());
+            else checkSupportsComparison(type, right.value());
+        }
+        else {
+            type = right.type();
+            if (left.isLiteral() && type instanceof AbstractCustomType<?> c)
+                left = literalToCustomType(c, left.value());
+            else checkSupportsComparison(type, left.value());
+        }
+
+        return type.evaluate(left.value(), operator, right.value());
+    }
+
+    record TypeAndValue(AbstractType<Object> type, Object value, boolean isLiteral) {
+
+    }
+
+    private TypeAndValue parseOperand(ExpressionParser.OperandContext o) {
+        Object value;
+        AbstractType<Object> type = null;
+        boolean isLiteral = o.IDENTIFIER() == null;
+
+        if (!isLiteral) { // Operand is a identifier
+            value = context.getResolver().resolveIdentifier(o.getText());
+
+            if (value != null) {
+                type = (AbstractType<Object>) context.getType(value.getClass());
+            }
+        }
+        else {
+            AbstractBaseType<?> base;
+            if (o.STRING() != null) base = context.getStringType();
+            else if (o.NUMBER() != null) base = context.getNumberType();
+            else throw new IllegalStateException();
+
+            value = base.parseLiteral(o.getText());
+            type = (AbstractType<Object>) base;
+        }
+
+        return new TypeAndValue(type, value, isLiteral);
     }
 
     // At least one is null
@@ -103,7 +113,7 @@ public class ExpressionEvaluator extends ExpressionBaseVisitor<Boolean> {
         if (left == null && right == null) {
             return operator == Operator.EQUALS; // Only true, if equals was the operator
         }
-        
+
         // Only one is null
         return operator == Operator.NOT_EQUALS; // All other operators should be false 
     }
@@ -112,7 +122,24 @@ public class ExpressionEvaluator extends ExpressionBaseVisitor<Boolean> {
         Object value = context.getResolver().resolveIdentifier(name);
         if (value instanceof Boolean b) return b;
         else if (value == null) return false;
-        else throw new IllegalArgumentException("Expected boolean, got " + value.getClass().getCanonicalName());
+        else
+            throw new IllegalArgumentException("Expected boolean, got " + value.getClass().getCanonicalName());
+    }
+
+    private TypeAndValue literalToCustomType(AbstractCustomType<?> type, Object value) {
+        if (value instanceof String s)
+            return new TypeAndValue((AbstractType<Object>) type, type.fromString(s), false);
+        else if (value instanceof Number n)
+            return new TypeAndValue((AbstractType<Object>) type, type.fromNumber(n), false);
+        else
+            throw new IllegalStateException(value.getClass().getCanonicalName());
+    }
+
+    private void checkSupportsComparison(AbstractType<?> type, Object otherValue) {
+        if (!type.supports(otherValue.getClass())) {
+            throw new IllegalArgumentException(String.format("Cannot compare %s with %s",
+                    otherValue.getClass().getCanonicalName(), type.getClass().getCanonicalName()));
+        }
     }
 
 }

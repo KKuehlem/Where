@@ -1,15 +1,17 @@
 package de.kkuehlem.where.definitions;
 
+import de.kkuehlem.where.exceptions.LiteralParseException;
 import de.kkuehlem.where.exceptions.UnsupportedOperatorException;
 import de.kkuehlem.where.parser.Operator;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.Temporal;
 import java.util.List;
 
-public class WhereDatetype extends WhereTypeDefinition<Temporal> {
+public class DateType extends AbstractCustomType<Temporal> {
 
-    public WhereDatetype() {
+    public DateType() {
         super("Date", List.of(
                 LocalDate.class,
                 LocalDateTime.class
@@ -17,8 +19,12 @@ public class WhereDatetype extends WhereTypeDefinition<Temporal> {
     }
 
     @Override
-    public Temporal parseLiteral(String literal) {
-        return LocalDate.parse(WhereStringType.parseStringLiteral(literal));
+    public Temporal fromString(String literal) throws LiteralParseException {
+        try {
+            return LocalDate.parse(literal);
+        } catch (DateTimeParseException ex) {
+            throw new LiteralParseException("Unable to parse date - date should be given as  ISO-8601 (yyyy-MM-dd)", ex);
+        }
     }
 
     @Override

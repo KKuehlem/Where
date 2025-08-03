@@ -5,9 +5,9 @@ import de.kkuehlem.where.parser.Operator;
 import java.util.List;
 import java.util.Objects;
 
-public class WhereStringType extends WhereTypeDefinition<String> {
+public class StringType extends AbstractBaseType<String> {
 
-    public WhereStringType() {
+    public StringType() {
         super("Text", List.of(
                 String.class
         ));
@@ -15,12 +15,8 @@ public class WhereStringType extends WhereTypeDefinition<String> {
     
     @Override
     public String parseLiteral(String literal) {
-        return parseStringLiteral(literal);
-    }
-    
-    public static String parseStringLiteral(String literal) {
-        if (!literal.startsWith("'")) throw new IllegalArgumentException("Malformed string: " + literal);
-        if (!literal.endsWith("'")) throw new IllegalArgumentException("Malformed string: " + literal);
+        if (!literal.startsWith("'")) throw new IllegalArgumentException("Malformed string literal: " + literal);
+        if (!literal.endsWith("'")) throw new IllegalArgumentException("Malformed string literal: " + literal);
         
         return literal.substring(1, literal.length() - 1);
     }

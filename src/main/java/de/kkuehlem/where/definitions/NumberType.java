@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class WhereNumberType extends WhereTypeDefinition<Number> {
+public class NumberType extends AbstractBaseType<Number> {
 
-    public WhereNumberType() {
+    public NumberType() {
         super("Number", List.of(
                 Byte.class,
                 Short.class,

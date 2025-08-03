@@ -10,7 +10,7 @@
 <dependency>
     <groupId>de.kkuehlem</groupId>
     <artifactId>where</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
 </dependency>
 ```
 
@@ -22,10 +22,8 @@ List<Person> persons = List.of(
     new Person("Peter", 42)
 );
         
-String input = "age <= 40";
-        
 List<Person> filtered = persons.stream()
-    .filter(Where.filter(input))
+    .filter(Where.filter("age <= 40"))
     .toList(); // [Anna, Bert]
 ```
 
