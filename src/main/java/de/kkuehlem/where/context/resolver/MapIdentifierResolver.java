@@ -1,6 +1,6 @@
 package de.kkuehlem.where.context.resolver;
 
-import de.kkuehlem.where.context.NoSuchIdentifierException;
+import de.kkuehlem.where.exceptions.NoSuchIdentifierException;
 import java.util.Map;
 import lombok.AllArgsConstructor;
 

@@ -1,4 +1,4 @@
-package de.kkuehlem.where.context;
+package de.kkuehlem.where.exceptions;
 
 import de.kkuehlem.where.definitions.WhereTypeDefinition;
 import de.kkuehlem.where.parser.Operator;

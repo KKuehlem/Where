@@ -1,4 +1,4 @@
-package de.kkuehlem.where.context;
+package de.kkuehlem.where.exceptions;
 
 public class UnsupportedTypeException extends RuntimeException {
 

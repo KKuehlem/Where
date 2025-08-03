@@ -1,6 +1,6 @@
 package de.kkuehlem.where.definitions;
 
-import de.kkuehlem.where.context.UnsupportedOperatorException;
+import de.kkuehlem.where.exceptions.UnsupportedOperatorException;
 import de.kkuehlem.where.parser.Operator;
 import java.time.LocalDate;
 import java.time.LocalDateTime;

@@ -1,5 +1,6 @@
 package de.kkuehlem.where.context;
 
+import de.kkuehlem.where.exceptions.UnsupportedTypeException;
 import de.kkuehlem.where.context.resolver.IdentifierResolver;
 import de.kkuehlem.where.definitions.WhereDatetype;
 import de.kkuehlem.where.definitions.WhereNumberType;
