@@ -90,7 +90,7 @@ public class ExpressionEvaluator extends ExpressionBaseVisitor<Boolean> {
         boolean isLiteral = o.IDENTIFIER() == null;
 
         if (!isLiteral) { // Operand is a identifier
-            value = context.getResolver().resolveIdentifier(o.getText());
+            value = context.resolveIdentifier(o.getText());
 
             if (value != null) {
                 type = (AbstractType<Object>) context.getType(value.getClass());
@@ -112,7 +112,9 @@ public class ExpressionEvaluator extends ExpressionBaseVisitor<Boolean> {
     // At least one is null
     private boolean solveNull(Object left, Operator operator, Object right) {
         if (left == null && right == null) {
-            return operator == Operator.EQUALS; // Only true, if equals was the operator
+            return operator == Operator.EQUALS
+                    || operator == Operator.GREATER_THAN_OR_EQUALS
+                    || operator == Operator.LESS_THAN_OR_EQUALS; // Only true, if a equals was the operator
         }
 
         // Only one is null
@@ -120,7 +122,7 @@ public class ExpressionEvaluator extends ExpressionBaseVisitor<Boolean> {
     }
 
     private Boolean resolveBoolean(String name) {
-        Object value = context.getResolver().resolveIdentifier(name);
+        Object value = context.resolveIdentifier(name);
         if (value instanceof Boolean b) return b;
         else if (value == null) return false;
         else

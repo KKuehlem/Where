@@ -11,12 +11,10 @@ import de.kkuehlem.where.exceptions.UnsupportedTypeException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 
-@Getter
 public class WhereContext {
 
     public static final List<AbstractCustomType<?>> DEFAULT_CUSTOM_TYPES = List.of(
@@ -25,9 +23,9 @@ public class WhereContext {
 
     private final IdentifierResolver resolver;
     private final List<AbstractCustomType<?>> customTypes;
-    private final AbstractBaseType<String> stringType;
-    private final AbstractBaseType<Number> numberType;
-    @Getter(AccessLevel.NONE) private final Map<Class<?>, AbstractType<?>> typeLookup = new HashMap<>();
+    @Getter private final AbstractBaseType<String> stringType;
+    @Getter private final AbstractBaseType<Number> numberType;
+    private final Map<Class<?>, AbstractType<?>> typeLookup = new HashMap<>();
 
     @Builder
     public WhereContext(@NonNull IdentifierResolver resolver,
@@ -52,6 +50,11 @@ public class WhereContext {
         AbstractType<? super T> d = (AbstractType<? super T>) typeLookup.get(cls);
         if (d == null) throw new UnsupportedTypeException(cls);
         else return d;
+    }
+    
+    public Object resolveIdentifier(String name) {
+        if ("null".equals(name)) return null;
+        else return resolver.resolveIdentifier(name);
     }
 
     private void addSupportedTypes(AbstractType<?> t) {

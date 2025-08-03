@@ -47,6 +47,18 @@ public class WhereTest {
 
         assertTrue(Where.where("a != n", ctx));
         assertTrue(Where.where("b != n", ctx));
+        assertTrue(Where.where("a != null", ctx));
+        assertTrue(Where.where("b != null", ctx));
+        assertTrue(Where.where("n = null", ctx));
+        assertTrue(Where.where("NOT n != null", ctx));
+        assertTrue(Where.where("n = null", ctx));
+        
+        assertTrue(Where.where("NOT b >= null", ctx));
+        assertTrue(Where.where("NOT b <= null", ctx));
+        assertTrue(Where.where("n <= null", ctx));
+        assertTrue(Where.where("n >= null", ctx));
+        assertTrue(Where.where("null <= null", ctx));
+        assertTrue(Where.where("null <= null", ctx));
     }
 
     @Test

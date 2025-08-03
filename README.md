@@ -43,6 +43,11 @@ List<Person> filtered = persons.stream()
     * `OR`, `AND`, `NOT`, braces
     * e.g. `(age < 40 OR name = "Anna") AND NOT (age > 30 AND name != "Bert")`
 
+Other features:
+* Values can be `null` and `null` can also be used lieterally in a query
+* Expressions with `null` will only be `true`, if a equals operator (`=`, `<=`, `>=`) is used and both operands are `null`
+    * This means that e.g. `null > null` is `false` and `null >= null` is `true`
+
 ## To Do
 - [ ] Add support for lists / arrays (e.g. `IN`, `NOT IN`)
 - [ ] Add support for enums
