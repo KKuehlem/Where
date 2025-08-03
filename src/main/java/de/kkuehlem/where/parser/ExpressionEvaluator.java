@@ -12,6 +12,10 @@ import lombok.NonNull;
 @AllArgsConstructor
 @Builder
 public class ExpressionEvaluator extends ExpressionBaseVisitor<Boolean> {
+    
+    record TypeAndValue(AbstractType<Object> type, Object value, boolean isLiteral) {
+
+    }
 
     @NonNull private final WhereContext context;
 
@@ -80,10 +84,6 @@ public class ExpressionEvaluator extends ExpressionBaseVisitor<Boolean> {
         return type.evaluate(left.value(), operator, right.value());
     }
 
-    record TypeAndValue(AbstractType<Object> type, Object value, boolean isLiteral) {
-
-    }
-
     private TypeAndValue parseOperand(ExpressionParser.OperandContext o) {
         Object value;
         AbstractType<Object> type = null;
@@ -105,6 +105,8 @@ public class ExpressionEvaluator extends ExpressionBaseVisitor<Boolean> {
             value = base.parseLiteral(o.getText());
             type = (AbstractType<Object>) base;
         }
+        
+        if (type != null) value = type.transformValue(value);
 
         return new TypeAndValue(type, value, isLiteral);
     }

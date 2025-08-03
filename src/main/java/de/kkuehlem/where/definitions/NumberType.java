@@ -2,27 +2,16 @@ package de.kkuehlem.where.definitions;
 
 import de.kkuehlem.where.exceptions.UnsupportedOperatorException;
 import de.kkuehlem.where.parser.Operator;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 public class NumberType extends AbstractBaseType<Number> {
 
     public NumberType() {
-        super("Number", List.of(
-                Byte.class,
-                Short.class,
-                Integer.class,
-                Long.class,
-                Float.class,
-                Double.class,
-                AtomicInteger.class,
-                AtomicLong.class,
-                BigInteger.class,
-                BigDecimal.class
-        ));
+        super("Number");
+    }
+    
+    @Override
+    public boolean supports(Class<? extends Object> check) {
+        return Number.class.isAssignableFrom(check);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package de.kkuehlem.where.definitions;
 
-import java.util.List;
 import lombok.NonNull;
 
 /**
@@ -10,8 +9,8 @@ import lombok.NonNull;
  */
 public abstract class AbstractBaseType<T> extends AbstractType<T> {
 
-    public AbstractBaseType(String name, List<Class<? extends T>> supportedTypes) {
-        super(name, supportedTypes);
+    public AbstractBaseType(String name) {
+        super(name);
     }
     
     public abstract T parseLiteral(@NonNull String literal);

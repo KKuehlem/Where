@@ -174,4 +174,24 @@ public class WhereTest {
         assertThrows(IllegalTypeException.class, () -> Where.where("1 = '1'", ctx));
         assertThrows(IllegalTypeException.class, () -> Where.where("'1' = 1", ctx));
     }
+    
+    enum MyEnum {A, B, C};
+    
+    @Test
+    public void testEnums() {
+        Map<String, Object> map = Map.of(
+                "a", MyEnum.A,
+                "b", MyEnum.B,
+                "c", MyEnum.C
+        );
+
+        WhereContext ctx = WhereContext.builder()
+                .resolver(new MapIdentifierResolver(map))
+                .build();
+
+        assertTrue(Where.where("a = a", ctx));
+        assertTrue(Where.where("a = 'A'", ctx));
+        assertTrue(Where.where("a != b", ctx));
+        assertTrue(Where.where("a != c", ctx));
+    }
 }

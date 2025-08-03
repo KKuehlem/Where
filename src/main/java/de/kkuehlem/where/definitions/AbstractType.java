@@ -2,7 +2,6 @@ package de.kkuehlem.where.definitions;
 
 import de.kkuehlem.where.exceptions.UnsupportedOperatorException;
 import de.kkuehlem.where.parser.Operator;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
@@ -17,12 +16,12 @@ import lombok.NonNull;
 public abstract class AbstractType<T> {
     
     protected final String name;
-    protected final List<Class<? extends T>> supportedTypes;
     
-    public boolean supports(@NonNull Class<? extends Object> check) {
-        
-        return supportedTypes.stream()
-                .anyMatch(c -> check.isAssignableFrom(c)); // c is a super type of check
+    public abstract boolean supports(@NonNull Class<? extends Object> check);
+    
+    @SuppressWarnings("unchecked")
+    public T transformValue(Object value) {
+        return (T) value;
     }
     
     /**

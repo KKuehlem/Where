@@ -5,6 +5,7 @@ import de.kkuehlem.where.definitions.AbstractBaseType;
 import de.kkuehlem.where.definitions.AbstractCustomType;
 import de.kkuehlem.where.definitions.AbstractType;
 import de.kkuehlem.where.definitions.DateType;
+import de.kkuehlem.where.definitions.EnumType;
 import de.kkuehlem.where.definitions.NumberType;
 import de.kkuehlem.where.definitions.StringType;
 import de.kkuehlem.where.exceptions.UnsupportedTypeException;
@@ -23,13 +24,16 @@ public class WhereContext {
 
     private final IdentifierResolver resolver;
     private final List<AbstractCustomType<?>> customTypes;
-    @Getter private final AbstractBaseType<String> stringType;
+    @Getter private final AbstractBaseType<CharSequence> stringType;
     @Getter private final AbstractBaseType<Number> numberType;
-    private final Map<Class<?>, AbstractType<?>> typeLookup = new HashMap<>();
+    @Getter private final AbstractBaseType<CharSequence> enumType;
+    private final List<AbstractBaseType<?>> baseTypes;
+    private final Map<Class<?>, AbstractCustomType<?>> typeLookup = new HashMap<>();
 
     @Builder
     public WhereContext(@NonNull IdentifierResolver resolver,
-            AbstractBaseType<String> stringType,
+            AbstractBaseType<CharSequence> stringType,
+            AbstractBaseType<CharSequence> enumType,
             AbstractBaseType<Number> numberType,
             List<AbstractCustomType<?>> types) {
 
@@ -37,34 +41,37 @@ public class WhereContext {
         this.customTypes = types != null ? types : DEFAULT_CUSTOM_TYPES;
 
         this.stringType = stringType != null ? stringType : new StringType();
+        this.enumType =  enumType != null ? enumType : new EnumType();
         this.numberType = numberType != null ? numberType : new NumberType();
+        
+        this.baseTypes = List.of(this.stringType, this.numberType, this.enumType);
 
         for (AbstractCustomType<?> t : this.customTypes) {
-            addSupportedTypes(t);
+            for (Class<?> cls : t.getSupportedTypes()) {
+                AbstractType<?> old = typeLookup.put(cls, t);
+                if (old != null) {
+                    throw new IllegalArgumentException(String.format("Duplicate definition for java class %s (defined in WhereTypeDefinition %s (%s) and in %s (%s))",
+                            cls.getCanonicalName(), t.getName(), t.getClass().getCanonicalName(), old.getName(), old.getClass().getCanonicalName()));
+                }
+            }
         }
-        addSupportedTypes(this.numberType);
-        addSupportedTypes(this.stringType);
     }
 
     public <T> AbstractType<? super T> getType(Class<T> cls) throws UnsupportedTypeException {
         AbstractType<? super T> d = (AbstractType<? super T>) typeLookup.get(cls);
-        if (d == null) throw new UnsupportedTypeException(cls);
+        if (d == null) {
+            for (AbstractBaseType<?> type : baseTypes) {
+                if (type.supports((Class<Object>) cls)) return (AbstractType<? super T>) type;
+            }
+            
+            throw new UnsupportedTypeException(cls);
+        }
         else return d;
     }
-    
+
     public Object resolveIdentifier(String name) {
         if ("null".equals(name)) return null;
         else return resolver.resolveIdentifier(name);
-    }
-
-    private void addSupportedTypes(AbstractType<?> t) {
-        for (Class<?> cls : t.getSupportedTypes()) {
-            AbstractType<?> old = typeLookup.put(cls, t);
-            if (old != null) {
-                throw new IllegalArgumentException(String.format("Duplicate definition for java class %s (defined in WhereTypeDefinition %s (%s) and in %s (%s))",
-                        cls.getCanonicalName(), t.getName(), t.getClass().getCanonicalName(), old.getName(), old.getClass().getCanonicalName()));
-            }
-        }
     }
 
 }

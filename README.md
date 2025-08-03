@@ -10,7 +10,7 @@
 <dependency>
     <groupId>de.kkuehlem</groupId>
     <artifactId>where</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
 </dependency>
 ```
 
@@ -28,15 +28,17 @@ List<Person> filtered = persons.stream()
 ```
 
 ## Supported Types and Operators
-* String
+* String (anything which extends `java.lang.CharSequence`)
     * `=`, `!=`
-* Numbers (Byte, Short, Integer, Long, Float, Double, AtomicInteger, AtomicLong, BigInteger, BigDecimal)
+* Numbers (anything which extends `java.lang.Number`)
     * `=`, `!=`, `<`, `<=`, `>`, `>=`
 * Dates (LocalDate, LocalDateTime)
     * `=`, `!=`, `<`, `<=`, `>`, `>=`
     * Literal date format: `yyyy-MM-dd` (ISO 8601)
 * Booleans
     * As operands in expressions, e.g. `isActive OR isVerified`
+* Enums
+    * Will be treated as strings via their `toString()` method
 * Custom Types
     * ...explanation coming soon...
 * Concatenating Expressions
@@ -52,5 +54,5 @@ Other features:
 
 ## To Do
 - [ ] Add support for lists / arrays (e.g. `IN`, `NOT IN`)
-- [ ] Add support for enums
+- [ ] Warn / error if enum literals do not exist
 - [ ] String operators `MATCHES` to match a regex and `LIKE` to match a wildcard expression
