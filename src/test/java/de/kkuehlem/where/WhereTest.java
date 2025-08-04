@@ -32,6 +32,19 @@ public class WhereTest {
 
         assertThrows(NoSuchIdentifierException.class, () -> Where.where("a = '123'", ctx));
     }
+    
+    public static void main(String[] args) {
+        Map<String, Object> map = Map.of(
+                "x", "123"
+        );
+
+        WhereContext ctx = WhereContext.builder()
+                .resolver(new MapIdentifierResolver(map))
+                .build();
+
+
+        Where.where("42=42 AND a = '123' AND 1=2", ctx);
+    }
 
     @Test
     public void nullTest() {
