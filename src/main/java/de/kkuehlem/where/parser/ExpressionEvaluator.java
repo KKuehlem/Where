@@ -69,15 +69,19 @@ public class ExpressionEvaluator extends ExpressionBaseVisitor<Boolean> {
         AbstractType<Object> type;
         // Type if a custom type, if left or right are non-literal
         if (left.type() instanceof AbstractCustomType<?> c) {
-            type = left.type();
-            if (right.isLiteral())
-                right = literalToCustomType(c, right.value());
-            else checkSupportsComparison(type, right.value());
+            type = (AbstractType<Object>) c;
+            if (right.isLiteral()) { // Comparison with custom type and literal
+                right = literalToCustomType(c, right.value()); // (a)
+            }
+            else { // If right is literal, this check is not needed, because of the literalToCustom conversion
+                checkSupportsComparison(c, right.value());
+            }
         }
         else {
-            type = right.type();
-            if (left.isLiteral() && type instanceof AbstractCustomType<?> c)
-                left = literalToCustomType(c, left.value());
+            type = right.type(); // Use the right type no matter what
+            if (left.isLiteral() && type instanceof AbstractCustomType<?> c) {
+                left = literalToCustomType(c, left.value()); // (b) Same as (a) but other way around
+            }
             else checkSupportsComparison(type, left.value());
         }
 
