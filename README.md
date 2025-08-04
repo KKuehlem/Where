@@ -5,7 +5,7 @@
 
 # Where - A simple Reflection-Based Query Language for Java
 
-## Include with Maven
+## Include with Maven (coming soon)
 ```xml
 <dependency>
     <groupId>de.kkuehlem</groupId>
@@ -45,7 +45,7 @@ List<Person> filtered = persons.stream()
     * `OR`, `AND`, `NOT`, braces
     * e.g. `(age < 40 OR name = "Anna") AND NOT (age > 30 AND name != "Bert")`
 
-Other features:
+## Features
 * Values can be `null` and `null` can also be used literally in a query
 * Expressions with `null` will only be `true`, if a equals operator (`=`, `<=`, `>=`) is used and both operands are `null`
     * This means that e.g. `null > null` is `false` and `null >= null` is `true`
@@ -56,3 +56,4 @@ Other features:
 - [ ] Add support for lists / arrays (e.g. `IN`, `NOT IN`)
 - [ ] Warn / error if enum literals do not exist
 - [ ] String operators `MATCHES` to match a regex and `LIKE` to match a wildcard expression
+- [ ] Better error messages with context information (e.g. which expression, which column, ...)
