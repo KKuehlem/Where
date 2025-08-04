@@ -53,6 +53,4 @@ List<Person> filtered = persons.stream()
 
 ## To Do
 - [ ] Add support for lists / arrays (e.g. `IN`, `NOT IN`)
-- [ ] Warn / error if enum literals do not exist
 - [ ] String operators `MATCHES` to match a regex and `LIKE` to match a wildcard expression
-- [ ] Better error messages with context information (e.g. which expression, which column, ...)

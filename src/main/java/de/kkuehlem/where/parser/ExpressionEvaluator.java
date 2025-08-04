@@ -5,6 +5,7 @@ import de.kkuehlem.where.definitions.AbstractBaseType;
 import de.kkuehlem.where.definitions.AbstractCustomType;
 import de.kkuehlem.where.definitions.AbstractType;
 import de.kkuehlem.where.exceptions.BadEnumValueException;
+import de.kkuehlem.where.exceptions.EvaluationException;
 import de.kkuehlem.where.exceptions.IllegalTypeException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,6 +20,7 @@ public class ExpressionEvaluator extends ExpressionBaseVisitor<Boolean> {
     }
 
     @NonNull private final WhereContext context;
+    @NonNull private final String originalInput;
 
     @Override
     public Boolean visitOrExpr(ExpressionParser.OrExprContext ctx) {
@@ -43,7 +45,6 @@ public class ExpressionEvaluator extends ExpressionBaseVisitor<Boolean> {
         if (isNot) return !visit(ctx.notExpr());
         else return visit(ctx.booleanExpr());
     }
-
     @Override
     public Boolean visitBooleanExpr(ExpressionParser.BooleanExprContext ctx) {
         if (ctx.expression() != null) { // ( expression )
@@ -52,7 +53,15 @@ public class ExpressionEvaluator extends ExpressionBaseVisitor<Boolean> {
         if (ctx.qualifiedIdentifier() != null) { // Whole expression is a identifier 
             return resolveBoolean(ctx.qualifiedIdentifier().getText());
         }
+        
+        try {
+            return visitBooleanInternal(ctx);
+        } catch (RuntimeException ex) {
+            throw new EvaluationException(originalInput, ctx, ex);
+        }
+    }
 
+    public Boolean visitBooleanInternal(ExpressionParser.BooleanExprContext ctx) {
         Operator operator = Operator.forSymbol(ctx.operator().getText());
 
         // Collect identifiers and resolve type

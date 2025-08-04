@@ -23,12 +23,12 @@ public class Where {
     public static <T> Predicate<T> where(String input, Function<T, WhereContext> ctx) {
         ParseTree tree = createTree(input);
 
-        return t -> new ExpressionEvaluator(ctx.apply(t)).visit(tree);
+        return t -> new ExpressionEvaluator(ctx.apply(t), input).visit(tree);
     }
 
     public static boolean where(String input, WhereContext ctx) {
         
-        return new ExpressionEvaluator(ctx)
+        return new ExpressionEvaluator(ctx, input)
                 .visit(createTree(input));
     }
     
