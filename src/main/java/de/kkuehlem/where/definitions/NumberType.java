@@ -27,8 +27,6 @@ public class NumberType extends AbstractBaseType<Number> {
         switch (operator) {
             case EQUALS:
                 return equals(a, b);
-            case NOT_EQUALS:
-                return !equals(a, b);
             case GREATER_THAN:
                 return a > b && !equals(a, b);
             case GREATER_THAN_OR_EQUALS:

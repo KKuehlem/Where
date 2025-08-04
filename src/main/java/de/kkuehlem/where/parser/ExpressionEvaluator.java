@@ -81,7 +81,11 @@ public class ExpressionEvaluator extends ExpressionBaseVisitor<Boolean> {
             else checkSupportsComparison(type, left.value());
         }
 
-        return type.evaluate(left.value(), operator, right.value());
+        // Evaluate using the computed type
+        if (operator == Operator.NOT_EQUALS) {
+            return !type.evaluate(left.value(), Operator.EQUALS, right.value());
+        }
+        else return type.evaluate(left.value(), operator, right.value());
     }
 
     private TypeAndValue parseOperand(ExpressionParser.OperandContext o) {

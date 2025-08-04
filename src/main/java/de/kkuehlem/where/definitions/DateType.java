@@ -35,8 +35,6 @@ public class DateType extends AbstractCustomType<Temporal> {
         switch (operator) {
             case EQUALS:
                 return a.equals(b);
-            case NOT_EQUALS:
-                return !a.equals(b);
             case LESS_THAN:
                 return a.isBefore(b);
             case LESS_THAN_OR_EQUALS:
