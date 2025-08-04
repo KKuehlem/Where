@@ -4,6 +4,7 @@ import de.kkuehlem.where.context.WhereContext;
 import de.kkuehlem.where.definitions.AbstractBaseType;
 import de.kkuehlem.where.definitions.AbstractCustomType;
 import de.kkuehlem.where.definitions.AbstractType;
+import de.kkuehlem.where.exceptions.BadEnumValueException;
 import de.kkuehlem.where.exceptions.IllegalTypeException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,7 +13,7 @@ import lombok.NonNull;
 @AllArgsConstructor
 @Builder
 public class ExpressionEvaluator extends ExpressionBaseVisitor<Boolean> {
-    
+
     record TypeAndValue(AbstractType<Object> type, Object value, boolean isLiteral) {
 
     }
@@ -66,30 +67,47 @@ public class ExpressionEvaluator extends ExpressionBaseVisitor<Boolean> {
         // From here on, neither values nor types are null
         assert left.type() != null && right.type() != null;
 
-        AbstractType<Object> type;
-        // Type if a custom type, if left or right are non-literal
-        if (left.type() instanceof AbstractCustomType<?> c) {
-            type = (AbstractType<Object>) c;
-            if (right.isLiteral()) { // Comparison with custom type and literal
-                right = literalToCustomType(c, right.value()); // (a)
-            }
-            else { // If right is literal, this check is not needed, because of the literalToCustom conversion
-                checkSupportsComparison(c, right.value());
-            }
+        AbstractType<?> type = null;
+        Class<?> enumClass = checkEnum(left, right);
+        if (enumClass != null) {
+            type = context.getEnumType();
+
+            if (left.isLiteral())
+                checkEnumValue(enumClass, left.value().toString());
+            if (right.isLiteral())
+                checkEnumValue(enumClass, right.value().toString());
+
+            left = new TypeAndValue(null, left.value().toString(), left.isLiteral());
+            right = new TypeAndValue(null, right.value().toString(), right.isLiteral());
         }
         else {
-            type = right.type(); // Use the right type no matter what
-            if (left.isLiteral() && type instanceof AbstractCustomType<?> c) {
-                left = literalToCustomType(c, left.value()); // (b) Same as (a) but other way around
+            // Type if a custom type, if left or right are non-literal
+            if (left.type() instanceof AbstractCustomType<?> c) {
+                type = (AbstractType<Object>) c;
+                if (right.isLiteral()) { // Comparison with custom type and literal
+                    right = literalToCustomType(c, right.value()); // (a)
+                }
+                else { // If right is literal, this check is not needed, because of the literalToCustom conversion
+                    checkSupportsComparison(c, right.value());
+                }
             }
-            else checkSupportsComparison(type, left.value());
+            else {
+                type = right.type(); // Use the right type no matter what
+                if (left.isLiteral() && type instanceof AbstractCustomType<?> c) {
+                    left = literalToCustomType(c, left.value()); // (b) Same as (a) but other way around
+                }
+                else checkSupportsComparison(type, left.value());
+            }
         }
+
+        // Just for typing
+        AbstractType<Object> t = (AbstractType<Object>) type;
 
         // Evaluate using the computed type
         if (operator == Operator.NOT_EQUALS) {
-            return !type.evaluate(left.value(), Operator.EQUALS, right.value());
+            return !t.evaluate(left.value(), Operator.EQUALS, right.value());
         }
-        else return type.evaluate(left.value(), operator, right.value());
+        else return t.evaluate(left.value(), operator, right.value());
     }
 
     private TypeAndValue parseOperand(ExpressionParser.OperandContext o) {
@@ -113,8 +131,6 @@ public class ExpressionEvaluator extends ExpressionBaseVisitor<Boolean> {
             value = base.parseLiteral(o.getText());
             type = (AbstractType<Object>) base;
         }
-        
-        if (type != null) value = type.transformValue(value);
 
         return new TypeAndValue(type, value, isLiteral);
     }
@@ -155,4 +171,21 @@ public class ExpressionEvaluator extends ExpressionBaseVisitor<Boolean> {
         }
     }
 
+    private Class<?> checkEnum(TypeAndValue left, TypeAndValue right) {
+        if (left.value().getClass().isEnum()) return left.value().getClass();
+        else if (right.value().getClass().isEnum())
+            return right.value().getClass();
+        else return null;
+    }
+
+    private void checkEnumValue(Class<?> enumClass, String s) {
+        if (!context.isFailOnBadEnumLiteral()) return;
+
+        try {
+            Enum.valueOf((Class<? extends Enum>) enumClass, s);
+        }
+        catch (IllegalArgumentException ex) {
+            throw new BadEnumValueException(s, enumClass);
+        }
+    }
 }

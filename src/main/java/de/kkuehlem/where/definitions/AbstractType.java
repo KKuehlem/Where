@@ -19,11 +19,6 @@ public abstract class AbstractType<T> {
     
     public abstract boolean supports(@NonNull Class<? extends Object> check);
     
-    @SuppressWarnings("unchecked")
-    public T transformValue(Object value) {
-        return (T) value;
-    }
-    
     /**
      * Evaluates a expression of "operand operator operand"
      * @param <A> The type of the left side

@@ -11,11 +11,4 @@ public class EnumType extends StringType {
         return check.isEnum() || super.supports(check);
     }
 
-    @Override
-    public CharSequence transformValue(Object value) {
-        if (value instanceof Enum<?> e) return e.toString();
-        else
-            throw new IllegalStateException("Expected value to be an enum value:" + value.getClass().getCanonicalName());
-    }
-
 }

@@ -8,6 +8,7 @@ import de.kkuehlem.where.definitions.DateType;
 import de.kkuehlem.where.definitions.EnumType;
 import de.kkuehlem.where.definitions.NumberType;
 import de.kkuehlem.where.definitions.StringType;
+import de.kkuehlem.where.exceptions.BadEnumValueException;
 import de.kkuehlem.where.exceptions.UnsupportedTypeException;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +28,11 @@ public class WhereContext {
     @Getter private final AbstractBaseType<CharSequence> stringType;
     @Getter private final AbstractBaseType<Number> numberType;
     @Getter private final AbstractBaseType<CharSequence> enumType;
+    /**
+     * If enable, comparisons with bad enum literals will throw a {@link BadEnumValueException}
+     * Default = true
+     */
+    @Getter private final boolean failOnBadEnumLiteral;
     private final List<AbstractBaseType<?>> baseTypes;
     private final Map<Class<?>, AbstractCustomType<?>> typeLookup = new HashMap<>();
 
@@ -35,6 +41,7 @@ public class WhereContext {
             AbstractBaseType<CharSequence> stringType,
             AbstractBaseType<CharSequence> enumType,
             AbstractBaseType<Number> numberType,
+            Boolean failOnBadEnumLiteral,
             List<AbstractCustomType<?>> types) {
 
         this.resolver = resolver;
@@ -45,6 +52,8 @@ public class WhereContext {
         this.numberType = numberType != null ? numberType : new NumberType();
         
         this.baseTypes = List.of(this.stringType, this.numberType, this.enumType);
+        
+        this.failOnBadEnumLiteral = failOnBadEnumLiteral != null ? failOnBadEnumLiteral : true;
 
         for (AbstractCustomType<?> t : this.customTypes) {
             for (Class<?> cls : t.getSupportedTypes()) {
