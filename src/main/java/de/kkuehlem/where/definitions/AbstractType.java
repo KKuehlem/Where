@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NonNull;
 
 /**
- * A abstract type definition for any custom types. This should either be {@link AbstractBaseWhereType}
+ * A abstract type definition for any custom types. This should either be {@link AbstractBaseType}
  * @author Konstantin Kühlem
  * @param <T> The type of the highest super class for this type
  */
