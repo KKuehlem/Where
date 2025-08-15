@@ -3,6 +3,7 @@ package de.kkuehlem.where;
 import de.kkuehlem.where.context.WhereContext;
 import de.kkuehlem.where.context.resolver.MapIdentifierResolver;
 import de.kkuehlem.where.exceptions.BadEnumValueException;
+import de.kkuehlem.where.exceptions.EvaluationException;
 import java.util.Map;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -33,6 +34,7 @@ public class WhereEnumTest {
         assertTrue(Where.where("a != c", ctx));
 
         // 'D' is no constant in MyEnum, so this expression is useless
-        assertThrows(BadEnumValueException.class, () -> Where.where("a = 'D'", ctx));
+        var ex = assertThrows(EvaluationException.class, () -> Where.where("a = 'D'", ctx));
+        assertEquals(BadEnumValueException.class, ex.getCause().getClass());
     }
 }

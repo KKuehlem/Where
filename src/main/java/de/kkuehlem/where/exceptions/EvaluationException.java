@@ -24,8 +24,8 @@ public class EvaluationException extends RuntimeException {
         
         if (start < exprStart) s.append("...");
         s.append(input, start, exprStart);
-        s.append(RED);
         s.append(" >");
+        s.append(RED);
         s.append(input, exprStart, exprStop + 1);
         s.append(RESET);
         s.append("< ");

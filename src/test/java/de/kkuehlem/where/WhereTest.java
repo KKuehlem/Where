@@ -2,6 +2,7 @@ package de.kkuehlem.where;
 
 import de.kkuehlem.where.context.WhereContext;
 import de.kkuehlem.where.context.resolver.MapIdentifierResolver;
+import de.kkuehlem.where.exceptions.EvaluationException;
 import de.kkuehlem.where.exceptions.IllegalTypeException;
 import de.kkuehlem.where.exceptions.LiteralParseException;
 import de.kkuehlem.where.exceptions.NoSuchIdentifierException;
@@ -30,7 +31,8 @@ public class WhereTest {
         assertFalse(Where.where("x = x AND x = '1234'", ctx));
         assertTrue(Where.where("x = x AND (x = '1234' OR x = '123')", ctx));
 
-        assertThrows(NoSuchIdentifierException.class, () -> Where.where("a = '123'", ctx));
+        var ex = assertThrows(EvaluationException.class, () -> Where.where("a = '123'", ctx));
+        assertEquals(NoSuchIdentifierException.class, ex.getCause().getClass());
     }
     
     public static void main(String[] args) {
@@ -130,8 +132,11 @@ public class WhereTest {
         assertTrue(Where.where("a < '2025-03-01'", ctx));
         assertTrue(Where.where("a > '2025-01-01'", ctx));
 
-        assertThrows(LiteralParseException.class, () -> Where.where("a < '2025-3-1'", ctx));
-        assertThrows(LiteralParseException.class, () -> Where.where("a < '2025-31'", ctx));
+        var e1 = assertThrows(EvaluationException.class, () -> Where.where("a < '2025-3-1'", ctx));
+        assertEquals(LiteralParseException.class, e1.getCause().getClass());
+        
+        var e2 = assertThrows(EvaluationException.class, () -> Where.where("a < '2025-31'", ctx));
+        assertEquals(LiteralParseException.class, e2.getCause().getClass());
     }
 
     @Test
@@ -184,8 +189,10 @@ public class WhereTest {
         assertTrue(Where.where("'1' = '1'", ctx));
         assertTrue(Where.where("NOT '1' = '2'", ctx));
 
-        assertThrows(IllegalTypeException.class, () -> Where.where("1 = '1'", ctx));
-        assertThrows(IllegalTypeException.class, () -> Where.where("'1' = 1", ctx));
+        var e1 = assertThrows(EvaluationException.class, () -> Where.where("1 = '1'", ctx));
+        assertEquals(IllegalTypeException.class, e1.getCause().getClass());
+        var e2 = assertThrows(EvaluationException.class, () -> Where.where("'1' = 1", ctx));
+        assertEquals(IllegalTypeException.class, e2.getCause().getClass());
     }
 
 }
