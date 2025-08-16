@@ -54,3 +54,6 @@ List<Person> filtered = persons.stream()
 ## To Do
 - [ ] Add support for lists / arrays (e.g. `IN`, `NOT IN`)
 - [ ] String operators `MATCHES` to match a regex and `LIKE` to match a wildcard expression
+- [ ] Support for more date types like Zoned or Offset Date(Time)
+- [ ] Special properties for some types like `length` for Strings and `year`, `month`,... for dates
+- [ ] More examples and documentation
