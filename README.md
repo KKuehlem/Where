@@ -1,10 +1,10 @@
 [![Java](https://img.shields.io/badge/Java-%23ED8B00.svg?logo=openjdk&logoColor=white)](#)
 [![Build](https://github.com/KKuehlem/Where/actions/workflows/maven.yml/badge.svg)](#)
-[![MavenCentral](https://img.shields.io/maven-central/v/de.kkuehlem/where)](#)
+[![MavenCentral](https://img.shields.io/maven-central/v/de.kkuehlem/where)](https://central.sonatype.com/artifact/de.kkuehlem/where)
 
 # Where - A simple Reflection-Based Query Language for Java
 
-## Include with Maven (coming soon)
+## Include with Maven
 ```xml
 <dependency>
     <groupId>de.kkuehlem</groupId>
