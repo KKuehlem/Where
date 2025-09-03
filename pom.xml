@@ -17,12 +17,24 @@
         </license>
     </licenses>
     
-    <distributionManagement>
-        <repository>
-            <id>central</id>
-            <url>https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
+    <name>Where</name>
+    <description>A simple Reflection-Based Query Language for Java</description>
+    <url>https://github.com/kkuehlem/where</url>
+    
+    <developers>
+        <developer>
+            <id>kkuehlem</id>
+            <name>Konstantin Kühlem</name>
+            <email>konstantin.kuehlem@rwth-aachen.de</email>
+            <url>https://github.com/kkuehlem</url>
+        </developer>
+    </developers>
+    
+    <scm>
+        <connection>scm:git:git://github.com/kkuehlem/where.git</connection>
+        <developerConnection>scm:git:ssh://github.com:kkuehlem/where.git</developerConnection>
+        <url>https://github.com/kkuehlem/where</url>
+    </scm>
     
     <dependencies>
         <dependency>
@@ -122,6 +134,17 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.8.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>central</publishingServerId>
+                    <autoPublish>true</autoPublish>
+                </configuration>
             </plugin>
         </plugins>
     </build>
