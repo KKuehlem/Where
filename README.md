@@ -4,13 +4,20 @@
 
 # Where - A simple Reflection-Based Query Language for Java
 
-## Include with Maven
+## Include with...
+
+### Maven
 ```xml
 <dependency>
     <groupId>de.kkuehlem</groupId>
     <artifactId>where</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
 </dependency>
+```
+
+### Gradle
+```groovy
+implementation group: 'de.kkuehlem', name: 'where', version: '1.0.4'
 ```
 
 ## Example
