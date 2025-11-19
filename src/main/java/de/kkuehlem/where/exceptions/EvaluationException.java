@@ -5,8 +5,6 @@ import org.antlr.v4.runtime.ParserRuleContext;
 public class EvaluationException extends RuntimeException {
 
     private static final int PADDING = 7;
-    private static final String RED = "\u001B[31m";
-    private static final String RESET = "\u001B[0m";
 
     public EvaluationException(String input, ParserRuleContext ctx, Throwable cause) {
         super(constructMessage(input, ctx, cause), cause);
@@ -25,9 +23,7 @@ public class EvaluationException extends RuntimeException {
         if (start < exprStart) s.append("...");
         s.append(input, start, exprStart);
         s.append(" >");
-        s.append(RED);
         s.append(input, exprStart, exprStop + 1);
-        s.append(RESET);
         s.append("< ");
         s.append(input, exprStop + 1, stop);
         if (stop > exprStop + 1) s.append("...");

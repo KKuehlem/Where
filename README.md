@@ -11,13 +11,13 @@
 <dependency>
     <groupId>de.kkuehlem</groupId>
     <artifactId>where</artifactId>
-    <version>1.0.5</version>
+    <version>1.0.6</version>
 </dependency>
 ```
 
 ### Gradle
 ```groovy
-implementation group: 'de.kkuehlem', name: 'where', version: '1.0.5'
+implementation group: 'de.kkuehlem', name: 'where', version: '1.0.6'
 ```
 
 ## Example
