@@ -34,6 +34,10 @@ public class StringType extends AbstractBaseType<CharSequence> {
         switch (operator) {
             case EQUALS:
                 return Objects.equals(a, b);
+            case CONTAINS:
+                return a.toString().contains(b);
+            case MATCHES:
+                return a.toString().matches(b.toString());
             default:
                 throw new UnsupportedOperatorException(this, operator);
         }
