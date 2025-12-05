@@ -10,7 +10,7 @@ public class WhereStringTest {
 
 
     @Test
-    public void tesContains() {
+    public void testContains() {
         Map<String, Object> map = Map.of(
                 "a", "a",
                 "abc", "abc"
@@ -42,5 +42,23 @@ public class WhereStringTest {
         assertTrue(Where.where("'abc 123 def' MATCHES 'abc \\d* def'", ctx));
         assertTrue(Where.where("'abc 123 def' MATCHES 'abc \\d\\d\\d def'", ctx));
         assertTrue(Where.where("NOT 'abc 123 def' MATCHES 'abc \\d\\d def'", ctx));
+    }
+    
+    @Test
+    public void testLength() {
+        Map<String, Object> map = Map.of(
+                "a", "abc",
+                "b", "12345 6789"
+        );
+
+        WhereContext ctx = WhereContext.builder()
+                .resolver(new MapIdentifierResolver(map))
+                .build();
+
+        assertTrue(Where.where("a.length = 3", ctx));
+        assertTrue(Where.where("a.length > 2", ctx));
+        assertTrue(Where.where("a.length < 4", ctx));
+        
+        assertTrue(Where.where("b.length = 10", ctx));
     }
 }
