@@ -38,11 +38,13 @@ List<Person> filtered = persons.stream()
     * `=`, `!=`
     * `CONTAINS` to test if a string contains another string literally
     * `MATCHES` to test if a string matches a Regex
+    * On variables, you can use `.length` to extract the length as an integer
 * Numbers (anything which extends `java.lang.Number`)
     * `=`, `!=`, `<`, `<=`, `>`, `>=`
 * Dates (LocalDate, LocalDateTime)
     * `=`, `!=`, `<`, `<=`, `>`, `>=`
     * Literal date format: `yyyy-MM-dd` (ISO 8601)
+    * On variables, you can use `.year`, `.month`, `.day`, `.hour`, `.minute`, and `.second` to extract properties as integers
 * Booleans
     * As operands in expressions, e.g. `isActive OR isVerified`
 * Enums
@@ -55,7 +57,7 @@ List<Person> filtered = persons.stream()
 
 ## Features
 * Values can be `null` and `null` can also be used literally in a query
-* Expressions with `null` will only be `true`, if a equals operator (`=`, `<=`, `>=`) is used and both operands are `null`
+* Expressions with `null` will only be `true`, if an equals operator (`=`, `<=`, `>=`) is used and both operands are `null`
     * This means that e.g. `null > null` is `false` and `null >= null` is `true`
 * Identifiers can refer to sub-objects, e.g. `book.author` (see `WhereObjectTest.java`)
     * If a property of a `null` objects is referenced, no exception is throw - it just evaluates to `null` (e.g. `book.author = null`, if `book` or `author` are `null`)
